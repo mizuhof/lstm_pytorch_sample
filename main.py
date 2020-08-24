@@ -49,6 +49,7 @@ def main():
         print("Let's use", torch.cuda.device_count(), "GPUs!")
         print(args.device_ids)
         torch.cuda.set_device(args.device_ids[0])
+        args.device = args.device_ids[0]
         model = nn.DataParallel(model, device_ids=args.device_ids).cuda()
     else:
         args.device = torch.device(

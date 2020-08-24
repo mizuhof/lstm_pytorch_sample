@@ -11,12 +11,13 @@ class Model(nn.Module):
 
     def forward(self, inputs, future=0):
         """
-        inputs: (B, T, 2)
+        inputs: (batch, seq_len, 2)
         """
-        h_t = torch.zeros(inputs.size(0), 256, dtype=torch.float)
-        c_t = torch.zeros(inputs.size(0), 256, dtype=torch.float)
-        h_t2 = torch.zeros(inputs.size(0), 256, dtype=torch.float)
-        c_t2 = torch.zeros(inputs.size(0), 256, dtype=torch.float)
+        device = inputs.device
+        h_t = torch.zeros(inputs.size(0), 256, dtype=torch.float).to(device)
+        c_t = torch.zeros(inputs.size(0), 256, dtype=torch.float).to(device)
+        h_t2 = torch.zeros(inputs.size(0), 256, dtype=torch.float).to(device)
+        c_t2 = torch.zeros(inputs.size(0), 256, dtype=torch.float).to(device)
 
         inputs = inputs.permute(1, 0, 2)
         outputs = [torch.zeros_like(inputs[0])]  # 処理の都合上のダミーを入れておく
@@ -29,6 +30,7 @@ class Model(nn.Module):
             output = self.linear(h_t2)
             outputs += [output]
 
+        # ダミーを除いたoutputsをstack
         outputs = torch.stack(outputs[1:], 1).squeeze(2)
 
         return outputs

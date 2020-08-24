@@ -11,6 +11,12 @@ class Dataset(data.Dataset):
         self.data, self.target = self.data_load()
 
     def data_load(self):
+        """
+        return: missing_trajectory, target
+            missing_trajectory: (self.data_sample_num, self.seq_len, 2)
+            target:             (self.data_sample_num, self.seq_len, 2)
+        """
+
         w = 1
         scale_x = torch.rand(self.data_sample_num, 1)*10
         scale_y = torch.rand(self.data_sample_num, 1)*10
@@ -24,16 +30,16 @@ class Dataset(data.Dataset):
         y = scale_y * torch.sin(sequence/w + theta_y)
         tra = torch.stack([x, y], dim=2)
 
-        deficiency_tra = []
+        missing_tra = []
         for t in tra[:, :-1].clone():
             _from = torch.randint(8, (1,))
             _to = torch.randint(_from.item(), self.seq_len-1, (1,))
             dt = t
             dt[_from:_to] = 0
-            deficiency_tra.append(dt)
-        deficiency_tra = torch.stack(deficiency_tra, dim=0)
+            missing_tra.append(dt)
+        missing_tra = torch.stack(missing_tra, dim=0)
 
-        return deficiency_tra, tra[:, 1:]
+        return missing_tra, tra[:, 1:]
 
     def __getitem__(self, index):
         return self.data[index], self.target[index]

@@ -14,14 +14,13 @@ def validate(val_loader, model, criterion, epoch, args, tf_writer=None):
             inputs = inputs_data.to(args.device)
             targets = targets_data.to(args.device)
 
-            # compute output
             outputs = model(inputs)
             loss = criterion(outputs, targets)
 
             losses.update(loss.item(), inputs.size(0))
 
-            tf_writer.add_scalars('loss', {'loss_test': losses.avg}, epoch)
-
     print(f'[validate]    loss: {losses.avg}')
+    tf_writer.add_scalars('loss', {'loss_test': losses.avg}, epoch)
+
     # save last prediction trajestory
-    save_pred_tra(inputs, outputs, targets, epoch, tf_writer)
+    save_pred_tra(inputs.cpu(), outputs.cpu(), targets.cpu(), epoch, tf_writer)

@@ -1,3 +1,5 @@
+GPU=1,3
 
 run:
-	python main.py --batch 8
+	export CUDA_VISIBLE_DEVICES=$(GPU)
+	python main.py --batch 8 --device_ids $(GPU)
