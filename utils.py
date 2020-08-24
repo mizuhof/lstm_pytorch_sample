@@ -26,7 +26,7 @@ def l2_loss(pred, target):
     return (target - pred).pow(2).sum(dim=1).sum() / (pred.size(0) * pred.size(1) * pred.size(2))
 
 
-def save_pred_tra(inputs, preds, targets, epoch, tf_writer):
+def save_pred_tra(inputs, preds, targets, epoch, tf_writer, tag=''):
     for k, (i, p, t) in enumerate(zip(inputs, preds, targets)):
         missing_i = t[i[:, 0] == 0]
 
@@ -37,6 +37,6 @@ def save_pred_tra(inputs, preds, targets, epoch, tf_writer):
                  marker='o', label='missing')
         plt.legend()
 
-        tf_writer.add_figure(f'tra/{k}', fig,
+        tf_writer.add_figure(f'{tag}/{k}', fig,
                              global_step=epoch,
                              walltime=time.time())

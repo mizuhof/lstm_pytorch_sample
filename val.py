@@ -23,4 +23,7 @@ def validate(val_loader, model, criterion, epoch, args, tf_writer=None):
     tf_writer.add_scalars('loss', {'loss_test': losses.avg}, epoch)
 
     # save last prediction trajestory
-    save_pred_tra(inputs.cpu(), outputs.cpu(), targets.cpu(), epoch, tf_writer)
+    save_data_num = int(inputs.size(0)) if int(inputs.size(0)) < 100 else 100
+    save_pred_tra(inputs[:save_data_num].cpu().numpy(),
+                  outputs[:save_data_num].cpu().numpy(),
+                  targets[:save_data_num].cpu().numpy(), epoch, tf_writer, tag='val')
