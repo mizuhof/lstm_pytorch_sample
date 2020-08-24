@@ -1,15 +1,15 @@
 import math
+
 import torch
 import torch.utils.data as data
 
 
 class Dataset(data.Dataset):
     def __init__(self, data_sample_num=1000, seq_len=10):
-        self.seq_len=seq_len
+        self.seq_len = seq_len
         self.data_sample_num = data_sample_num
         self.data, self.target = self.data_load()
 
-        
     def data_load(self):
         w = 1
         scale_x = torch.rand(self.data_sample_num, 1)*10
@@ -17,11 +17,12 @@ class Dataset(data.Dataset):
         theta_x = torch.rand(self.data_sample_num, 1)*math.pi
         theta_y = torch.rand(self.data_sample_num, 1)*math.pi
 
-        sequence = torch.arange(0, math.pi, step=math.pi / (self.seq_len+1)).repeat(self.data_sample_num).view(self.data_sample_num, -1)
+        sequence = torch.arange(0, math.pi, step=math.pi / (self.seq_len+1)
+                                ).repeat(self.data_sample_num).view(self.data_sample_num, -1)
 
         x = scale_x * torch.sin(sequence/w + theta_x)
         y = scale_y * torch.sin(sequence/w + theta_y)
-        tra = torch.stack([x,y], dim=2)
+        tra = torch.stack([x, y], dim=2)
 
         deficiency_tra = []
         for t in tra[:, :-1].clone():

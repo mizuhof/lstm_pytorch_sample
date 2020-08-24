@@ -1,6 +1,7 @@
 import torch.nn as nn
-from utils import AverageMeter
 from torch.nn.utils import clip_grad_norm_
+
+from utils import AverageMeter
 
 
 def train(train_loader, model, criterion, optimizer, epoch, args, tf_writer):
@@ -21,6 +22,7 @@ def train(train_loader, model, criterion, optimizer, epoch, args, tf_writer):
         loss.backward()
         optimizer.step()
 
-        tf_writer.add_scalars('loss', {'loss_train': losses.val}, epoch*len(train_loader) + i)
+        tf_writer.add_scalars(
+            'loss', {'loss_train': losses.val}, epoch*len(train_loader) + i)
 
     print(f'[{epoch}/{args.epochs}]    loss: {losses.avg}')

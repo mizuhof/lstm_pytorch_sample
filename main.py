@@ -1,6 +1,3 @@
-import torch
-
-
 import os
 import shutil
 
@@ -9,13 +6,15 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
 import torchvision
-from opts import argparser
-from dataset import Dataset
 from torch.utils.tensorboard import SummaryWriter
-from train import train
-from val import validate
+
+from dataset import Dataset
 from model import Model
+from opts import argparser
+from train import train
 from utils import l2_loss
+from val import validate
+
 
 def save_checkpoint(state, epoch, args):
     filename = f'{args.checkpoint_dir}/ckpt_{epoch}.pth'
@@ -36,7 +35,6 @@ def main():
     args.model_dir = os.path.join(args.log_path, 'model')
     check_log_folders(args)
 
-
     model = Model()
 
     # save model graph visualization
@@ -44,7 +42,6 @@ def main():
     inputs = torch.rand(8, 10, 2)
     model_writer.add_graph(model, inputs)
     model_writer.close()
-
 
     if args.device_ids != '' and torch.cuda.device_count() > 1:
         args.device_ids = args.device_ids.split(",")
@@ -54,9 +51,9 @@ def main():
         torch.cuda.set_device(args.device_ids[0])
         model = nn.DataParallel(model, device_ids=args.device_ids).cuda()
     else:
-        args.device = torch.device("cuda:"+str(args.device) if torch.cuda.is_available() else "cpu")
+        args.device = torch.device(
+            "cuda:"+str(args.device) if torch.cuda.is_available() else "cpu")
         model.to(args.device)
-
 
     train_dataset = Dataset()
     val_dataset = Dataset()
@@ -65,7 +62,7 @@ def main():
         train_dataset,
         batch_size=args.batch_size, shuffle=True,
         num_workers=args.workers, pin_memory=True,
-        drop_last=True)  
+        drop_last=True)
     val_loader = torch.utils.data.DataLoader(
         val_dataset,
         batch_size=args.batch_size, shuffle=False,
@@ -85,11 +82,13 @@ def main():
 
     for epoch in range(args.epochs):
         # train for one epoch
-        train(train_loader, model, criterion, optimizer, epoch, args, tf_writer)
+        train(train_loader, model, criterion,
+              optimizer, epoch, args, tf_writer)
 
         # evaluate on validation set
         if (epoch + 1) % args.eval_freq == 0 or epoch == args.epochs - 1:
-            validate(val_loader, model, criterion, epoch*len(train_loader), args, tf_writer)
+            validate(val_loader, model, criterion, epoch *
+                     len(train_loader), args, tf_writer)
         save_checkpoint({
             'epoch': epoch + 1,
             'state_dict': model.state_dict(),
@@ -97,7 +96,7 @@ def main():
         }, epoch, args)
 
         scheduler.step()
-    
+
 
 if __name__ == '__main__':
     main()

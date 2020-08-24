@@ -2,7 +2,8 @@ import argparse
 
 
 def argparser():
-    parser = argparse.ArgumentParser(description="PyTorch implementation of Temporal Segment Networks")
+    parser = argparse.ArgumentParser(
+        description="PyTorch implementation of Temporal Segment Networks")
 
     parser.add_argument('--log_path', type=str, default="log")
     parser.add_argument('--device_ids', type=str, default="")
@@ -22,4 +23,3 @@ def argparser():
                         help='number of data loading workers (default: 8)')
 
     return parser.parse_args()
-

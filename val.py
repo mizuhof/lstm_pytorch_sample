@@ -7,8 +7,6 @@ from utils import AverageMeter, save_pred_tra
 
 def validate(val_loader, model, criterion, epoch, args, tf_writer=None):
     losses = AverageMeter()
-    top1 = AverageMeter()
-    top5 = AverageMeter()
 
     model.eval()
     with torch.no_grad():
@@ -27,6 +25,3 @@ def validate(val_loader, model, criterion, epoch, args, tf_writer=None):
     print(f'[validate]    loss: {losses.avg}')
     # save last prediction trajestory
     save_pred_tra(inputs, outputs, targets, epoch, tf_writer)
-
-
-
