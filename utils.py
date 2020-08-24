@@ -40,7 +40,10 @@ def save_pred_tra(inputs, preds, targets, epoch, tf_writer, tag=''):
 
         fig = plt.figure()
         plt.plot(p[:, 0], p[:, 1], marker='o', label='pred')
+        plt.plot(p[0, 0], p[0, 1], marker='D', markersize=10, color='red')
+
         plt.plot(t[:, 0], t[:, 1], marker='o', label='target')
+        plt.plot(t[0, 0], t[0, 1], marker='D', markersize=10, color='red')
         plt.plot(missing_i[:, 0], missing_i[:, 1],
                  marker='o', label='missing')
         plt.legend()
