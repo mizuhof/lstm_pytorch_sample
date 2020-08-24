@@ -22,8 +22,16 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
 
+def loss_fn(pred, target):
+    return l1_loss(pred, target) + l2_loss(pred, target)
+
+
+def l1_loss(pred, target):
+    return (target - pred).abs().sum(dim=1).sum(dim=1).sum() / (pred.size(0) * pred.size(1) * pred.size(2))
+
+
 def l2_loss(pred, target):
-    return (target - pred).pow(2).sum(dim=1).sum() / (pred.size(0) * pred.size(1) * pred.size(2))
+    return (target - pred).pow(2).sum(dim=1).sum(dim=1).sum() / (pred.size(0) * pred.size(1) * pred.size(2))
 
 
 def save_pred_tra(inputs, preds, targets, epoch, tf_writer, tag=''):

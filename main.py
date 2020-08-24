@@ -12,7 +12,7 @@ from dataset import Dataset
 from model import Model
 from opts import argparser
 from train import train
-from utils import l2_loss
+from utils import loss_fn
 from val import validate
 
 
@@ -38,10 +38,10 @@ def main():
     model = Model()
 
     # save model graph visualization
-    model_writer = SummaryWriter(os.path.join(args.log_path, 'model'))
-    inputs = torch.rand(8, 10, 2)
-    model_writer.add_graph(model, inputs)
-    model_writer.close()
+    # model_writer = SummaryWriter(os.path.join(args.log_path, 'model'))
+    # inputs = torch.rand(8, 10, 2)
+    # model_writer.add_graph(model, inputs)
+    # model_writer.close()
 
     if args.device_ids != '' and torch.cuda.device_count() > 1:
         args.device_ids = args.device_ids.split(",")
@@ -56,14 +56,13 @@ def main():
             "cuda:"+str(args.device) if torch.cuda.is_available() else "cpu")
         model.to(args.device)
 
-    train_dataset = Dataset()
-    val_dataset = Dataset()
+    train_dataset = Dataset(data_sample_num=10000)
+    val_dataset = Dataset(data_sample_num=1000)
 
     train_loader = torch.utils.data.DataLoader(
         train_dataset,
         batch_size=args.batch_size, shuffle=True,
-        num_workers=args.workers, pin_memory=True,
-        drop_last=True)
+        num_workers=args.workers, pin_memory=True)
     val_loader = torch.utils.data.DataLoader(
         val_dataset,
         batch_size=args.batch_size, shuffle=False,
@@ -74,7 +73,7 @@ def main():
         args.lr,
         momentum=args.momentum,
         weight_decay=args.weight_decay)
-    criterion = l2_loss
+    criterion = loss_fn
 
     scheduler = lr_scheduler.CosineAnnealingLR(
         optimizer, args.epochs, eta_min=0, last_epoch=-1
